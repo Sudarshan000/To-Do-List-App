@@ -1,21 +1,43 @@
-const inputBox = document.getElementById("input-box");
+const taskInput = document.getElementById("task-input");
+const deadlineInput = document.getElementById("deadline-input");
 const listContainer = document.getElementById("list-container");
 const message = document.getElementById("message");
 
 function addTask() {
-    if (inputBox.value === '') {
+    if (taskInput.value === '') {
         alert("You must write something!");
+    } else if (deadlineInput.value === '') {
+        alert("Please select a deadline!");
     } else {
         let li = document.createElement("li");
-        li.innerHTML = inputBox.value;
+        let formattedDate = formatDate(deadlineInput.value);
+        li.innerHTML = `${taskInput.value} (Deadline: ${formattedDate})`;
+        li.dataset.deadline = deadlineInput.value;
         listContainer.appendChild(li);
         let span = document.createElement("span");
         span.innerHTML = "\u00d7";
         li.appendChild(span);
+
+        sortTasks();
     }
-    inputBox.value = '';
+    taskInput.value = '';
+    deadlineInput.value = '';
     saveData();
     checkTaskCount();
+}
+
+function formatDate(dateString) {
+    let date = new Date(dateString);
+    let day = date.getDate().toString().padStart(2, '0');
+    let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+    let year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+function sortTasks() {
+    let tasks = Array.from(listContainer.getElementsByTagName("li"));
+    tasks.sort((a, b) => new Date(a.dataset.deadline) - new Date(b.dataset.deadline));
+    tasks.forEach(task => listContainer.appendChild(task));
 }
 
 listContainer.addEventListener("click", function (e) {
@@ -35,7 +57,14 @@ function saveData() {
 
 function showTask() {
     listContainer.innerHTML = localStorage.getItem("data");
-    checkTaskCount(); // Check task count when tasks are loaded from localStorage
+    let tasks = Array.from(listContainer.getElementsByTagName("li"));
+    tasks.forEach(task => {
+        let deadline = task.dataset.deadline;
+        let formattedDate = formatDate(deadline);
+        task.innerHTML = task.innerHTML.replace(/\(Deadline: .*\)/, `(Deadline: ${formattedDate})`);
+    });
+    sortTasks();
+    checkTaskCount();
 }
 
 function checkTaskCount() {
