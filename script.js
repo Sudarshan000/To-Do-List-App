@@ -3,6 +3,7 @@ const deadlineInput = document.getElementById("deadline-input");
 const listContainer = document.getElementById("list-container");
 const message = document.getElementById("message");
 
+
 function addTask() {
     if (taskInput.value === '') {
         alert("You must write something!");
@@ -11,13 +12,29 @@ function addTask() {
     } else {
         let li = document.createElement("li");
         let formattedDate = formatDate(deadlineInput.value);
-        li.innerHTML = `${taskInput.value} (Deadline: ${formattedDate})`;
+
+        let taskContent = document.createElement("div");
+        taskContent.className = "task-content";
+
+        let taskText = document.createElement("div");
+        taskText.className = "task-text";
+        taskText.textContent = taskInput.value;
+
+        let taskDeadline = document.createElement("div");
+        taskDeadline.className = "task-deadline";
+        taskDeadline.textContent = `Deadline: ${formattedDate}`;
+
+        taskContent.appendChild(taskText);
+        taskContent.appendChild(taskDeadline);
+
+        li.appendChild(taskContent);
         li.dataset.deadline = deadlineInput.value;
-        listContainer.appendChild(li);
+
         let span = document.createElement("span");
         span.innerHTML = "\u00d7";
         li.appendChild(span);
 
+        listContainer.appendChild(li);
         sortTasks();
     }
     taskInput.value = '';
@@ -25,6 +42,23 @@ function addTask() {
     saveData();
     checkTaskCount();
 }
+
+function showTask() {
+    listContainer.innerHTML = localStorage.getItem("data");
+    let tasks = Array.from(listContainer.getElementsByTagName("li"));
+    tasks.forEach(task => {
+        let deadline = task.dataset.deadline;
+        let formattedDate = formatDate(deadline);
+        let taskDeadline = task.querySelector('.task-deadline');
+        if (taskDeadline) {
+            taskDeadline.textContent = `Deadline: ${formattedDate}`;
+        }
+    });
+    sortTasks();
+    checkTaskCount();
+}
+
+
 
 function formatDate(dateString) {
     let date = new Date(dateString);
@@ -55,17 +89,6 @@ function saveData() {
     localStorage.setItem("data", listContainer.innerHTML);
 }
 
-function showTask() {
-    listContainer.innerHTML = localStorage.getItem("data");
-    let tasks = Array.from(listContainer.getElementsByTagName("li"));
-    tasks.forEach(task => {
-        let deadline = task.dataset.deadline;
-        let formattedDate = formatDate(deadline);
-        task.innerHTML = task.innerHTML.replace(/\(Deadline: .*\)/, `(Deadline: ${formattedDate})`);
-    });
-    sortTasks();
-    checkTaskCount();
-}
 
 function checkTaskCount() {
     const tasks = listContainer.getElementsByTagName("li").length;
@@ -77,3 +100,4 @@ function checkTaskCount() {
 }
 
 showTask();
+
