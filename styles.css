@@ -79,17 +79,54 @@ button:hover {
     background: #ff7965;
 }
 
-ul li{
+
+ul li {
     list-style: none;
     font-size: 17px;
-    padding: 12px 8px 12px 50px;
+    padding: 12px 50px 12px 50px;
     user-select: none;
     cursor: pointer;
     position: relative;
-    padding-right: 50px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-height: 44px;
+    display: flex;
+    align-items: flex-start;
+    box-sizing: border-box;
 }
 
-ul li::before{
+ul li .task-content {
+    flex-grow: 1;
+    padding-right: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+ul li .task-text {
+    word-break: break-word;
+}
+
+ul li .task-deadline {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+}
+
+ul li span {
+    position: absolute;
+    right: 10px;
+    top: 12px;
+    width: 40px;
+    height: 40px;
+    font-size: 22px;
+    color: #555;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #fff;
+}
+
+ul li::before {
     content: '';
     position: absolute;
     height: 28px;
@@ -98,8 +135,9 @@ ul li::before{
     background-image: url(images/unchecked.png);
     background-size: cover;
     background-position: center;
+    left: 10px;
     top: 12px;
-    left: 8px;
+    
 }
 
 ul li.checked {
@@ -109,19 +147,6 @@ ul li.checked {
 
 ul li.checked::before {
     background-image: url(images/checked.png);
-}
-
-ul li span {
-    position: absolute;
-    right: 0;
-    top: 5px;
-    width: 40px;
-    height: 40px;
-    font-size: 22px;
-    color: #555;
-    line-height: 40px;
-    text-align: center;
-    border-radius: 50%;
 }
 
 ul li span:hover{
